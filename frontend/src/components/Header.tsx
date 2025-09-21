@@ -27,7 +27,7 @@ interface HeaderProps {
 export function Header({
   cartItems,
   onCartClick,
-  onAIBrandingClick,
+
   onHeritageCapsuleClick,
   onLivingStoriesClick,
   onEventCalendarClick,
@@ -37,130 +37,112 @@ export function Header({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 bg-[rgba(34,0,0,0.86)] backdrop-blur-sm border-b border-border z-50">
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-[rgba(34,0,0,0.9)] via-[rgba(50,0,0,0.88)] to-[rgba(34,0,0,0.9)] backdrop-blur-lg border-b border-orange-900/40 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center space-x-3">
             <div className="relative">
-              <h1 className="text-2xl font-bold text-orange-200">ArteNact</h1>
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full opacity-80"></div>
+              <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 drop-shadow-md">
+                ArteNact
+              </h1>
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
             </div>
-            <span className="ml-3 text-sm text-orange-100/80 italic hidden sm:block">
+            <span className="hidden sm:block text-sm text-orange-100/80 italic">
               Folk Artisans Marketplace
             </span>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {["Artisans", "Products", "Collections", "About"].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="text-orange-100/90 hover:text-orange-200 transition-colors relative group"
-              >
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-400 transition-all group-hover:w-full"></span>
-              </a>
-            ))}
-          </nav>
+          {/* Desktop Menu & Actions */}
+          <div className="hidden md:flex items-center space-x-2">
+            {/* Navigation Buttons */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onLivingStoriesClick}
+              className="flex items-center space-x-1 rounded-lg border-orange-200/30 text-orange-200 bg-orange-100/10 hover:bg-orange-100/20 hover:shadow-md"
+            >
+              <Book className="h-4 w-4" />
+              <span>Stories</span>
+            </Button>
 
-          {/* Actions */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onEventCalendarClick}
+              className="flex items-center space-x-1 rounded-lg border-orange-200/30 text-orange-200 bg-orange-100/10 hover:bg-orange-100/20 hover:shadow-md"
+            >
+              <Calendar className="h-4 w-4" />
+              <span>Events</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onHeritageCapsuleClick}
+              className="flex items-center space-x-1 rounded-lg border-orange-200/30 text-orange-200 bg-orange-100/10 hover:bg-orange-100/20 hover:shadow-md"
+            >
+              <Archive className="h-4 w-4" />
+              <span>Heritage</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => (window.location.hash = "#/studio")}
+              className="flex items-center space-x-1 rounded-lg border-orange-300/40 text-orange-100 bg-orange-200/20 hover:bg-orange-200/30 hover:shadow-md"
+            >
+              <Palette className="h-4 w-4" />
+              <span>AI Studio</span>
+            </Button>
+
+            {/* Auth Buttons */}
+            
+
+            <Button
+              size="sm"
+              onClick={onSignUpClick}
+              className="flex mr-10  items-center space-x-1 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 shadow-md"
+            >
+              <PersonAdd className="h-4 w-4" />
+              <span>Sign Up</span>
+            </Button>
+          </div>
+
+          {/* Right Actions */}
           <div className="flex items-center space-x-2">
             {/* Search */}
             <Button
               variant="ghost"
               size="sm"
-              className="hidden sm:flex text-orange-200 hover:bg-orange-200/10"
+              className="hidden sm:flex text-orange-200 hover:bg-orange-200/10 rounded-full"
             >
-              <Search className="h-4 w-4" />
+              <Search className="h-5 w-5" />
             </Button>
-
-            {/* Desktop Only Buttons */}
-            <div className="hidden md:flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onLivingStoriesClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200 hover:bg-orange-100/20"
-              >
-                <Book className="h-4 w-4 mr-2" />
-                Stories
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onEventCalendarClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200 hover:bg-orange-100/20"
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Events
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onHeritageCapsuleClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200 hover:bg-orange-100/20"
-              >
-                <Archive className="h-4 w-4 mr-2" />
-                Heritage
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => { window.location.hash = '#/studio'; }}
-                className="bg-orange-200/20 border-orange-300/40 text-orange-100 hover:bg-orange-200/30"
-              >
-                <Palette className="h-4 w-4 mr-2" />
-                AI Studio
-              </Button>
-
-              {/* Auth Buttons */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onSignInClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200 hover:bg-orange-100/20"
-              >
-                <Login className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
-              <Button
-                size="sm"
-                onClick={onSignUpClick}
-                className="bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700"
-              >
-                <PersonAdd className="h-4 w-4 mr-2" />
-                Sign Up
-              </Button>
-            </div>
 
             {/* Cart */}
             <Button
               variant="ghost"
               size="sm"
               onClick={onCartClick}
-              className="relative text-orange-200 hover:bg-orange-200/10"
+              className="relative text-orange-200 hover:bg-orange-200/10 rounded-full"
             >
               <ShoppingCart className="h-5 w-5" />
               {cartItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-orange-900 text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
+                <span className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs font-semibold rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white flex items-center justify-center shadow-lg">
                   {cartItems}
                 </span>
               )}
             </Button>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu */}
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden text-orange-200 hover:bg-orange-200/10"
+              className="md:hidden text-orange-200 hover:bg-orange-200/10 rounded-full"
               onClick={() => setMobileMenuOpen(true)}
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-6 w-6" />
             </Button>
           </div>
         </div>
@@ -168,92 +150,77 @@ export function Header({
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/60 z-50 md:hidden">
-          <div className="absolute top-0 right-0 w-64 h-full bg-[rgba(34,0,0,0.95)] shadow-lg p-6 flex flex-col space-y-6 animate-slide-in">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-orange-200">Menu</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-orange-200 hover:bg-orange-200/10"
-              >
-                <Close className="h-5 w-5" />
-              </Button>
-            </div>
-
-            {/* Links */}
-            <nav className="flex flex-col space-y-4 text-orange-100">
-              {["Artisans", "Products", "Collections", "About"].map((item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="hover:text-orange-200 transition-colors"
-                >
-                  {item}
-                </a>
-              ))}
-            </nav>
-
-            {/* Actions */}
-            <div className="flex flex-col space-y-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onLivingStoriesClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200"
-              >
-                <Book className="h-4 w-4 mr-2" />
-                Stories
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onEventCalendarClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200"
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Events
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onHeritageCapsuleClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200"
-              >
-                <Archive className="h-4 w-4 mr-2" />
-                Heritage
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => { window.location.hash = '#/studio'; setMobileMenuOpen(false); }}
-                className="bg-orange-200/20 border-orange-300/40 text-orange-100"
-              >
-                <Palette className="h-4 w-4 mr-2" />
-                AI Studio
-              </Button>
-
-              {/* Auth Buttons */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onSignInClick}
-                className="bg-orange-100/10 border-orange-200/30 text-orange-200"
-              >
-                <Login className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
-              <Button
-                size="sm"
-                onClick={onSignUpClick}
-                className="bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700"
-              >
-                <PersonAdd className="h-4 w-4 mr-2" />
-                Sign Up
-              </Button>
-            </div>
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-md md:hidden">
+          <div className="flex justify-between items-center p-6 border-b border-orange-900/40">
+            <h2 className="text-lg font-bold text-orange-200">Menu</h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-orange-200 hover:bg-orange-200/10 rounded-full"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Close className="h-5 w-5" />
+            </Button>
           </div>
+
+          <nav className="flex-grow overflow-auto px-6 py-4 space-y-6 text-orange-100 font-medium">
+            {["Artisans", "Products", "Collections", "About"].map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="block text-xl hover:text-orange-300 transition-colors"
+              >
+                {item}
+              </a>
+            ))}
+
+            <div className="mt-8 space-y-4">
+              {[
+                { label: "Stories", icon: Book, onClick: onLivingStoriesClick },
+                { label: "Events", icon: Calendar, onClick: onEventCalendarClick },
+                { label: "Heritage", icon: Archive, onClick: onHeritageCapsuleClick },
+                {
+                  label: "AI Studio",
+                  icon: Palette,
+                  onClick: () => {
+                    window.location.hash = "#/studio";
+                    setMobileMenuOpen(false);
+                  },
+                },
+              ].map((btn) => (
+                <Button
+                  key={btn.label}
+                  variant="outline"
+                  
+                  onClick={btn.onClick}
+                  className="w-full flex items-center space-x-2 rounded-lg border-orange-200/30 text-orange-200 bg-orange-100/10 hover:bg-orange-100/20"
+                >
+                  <btn.icon className="h-5 w-5" />
+                  <span>{btn.label}</span>
+                </Button>
+              ))}
+
+              {/* Auth */}
+              <Button
+                variant="outline"
+               
+                onClick={onSignInClick}
+                className="w-full flex items-center space-x-2 rounded-lg border-orange-200/30 text-orange-200 bg-orange-100/10 hover:bg-orange-100/20"
+              >
+                <Login className="h-5 w-5" />
+                <span>Sign In</span>
+              </Button>
+
+              <Button
+               
+                onClick={onSignUpClick}
+                className="w-full flex items-center space-x-2 rounded-lg bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 shadow-md"
+              >
+                <PersonAdd className="h-5 w-5" />
+                <span>Sign Up</span>
+              </Button>
+            </div>
+          </nav>
         </div>
       )}
     </header>
