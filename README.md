@@ -92,62 +92,11 @@ Follow these steps to get the project running on your local machine.
     cd ../backend
     npm install
     ```
-3.  **Set up environment variables:**
-    * Create a `.env` file in both the `frontend` and `backend` directories.
-    * Copy the contents from the provided `.env.example` file and fill in your GCP credentials.
 
-4.  **Run the application:**
-    ```bash
-    # In one terminal, start the backend
-    cd backend
-    npm run dev
-    
-    # In a second terminal, start the frontend
-    cd ../frontend
-    npm run dev
-    ```
 
 ### 📜 License
 
 This project is licensed under the MIT License.
-
----
-
-### 2. `.env.example`
-
-Create this file in both the `frontend` and `backend` folders for a professional setup.
-
-.env.example
-This file is a template for your environment variables.
-NEVER commit your actual .env file to Git.
---- GCP Configuration ---
-GCP_PROJECT_ID=your-gcp-project-id
-GCP_REGION=us-central1
-GCS_BUCKET_NAME=your-gcs-bucket-name
-
---- AI API Configuration ---
-Use base64 encoded service account key for production,
-but for local dev, you can use the path to the key file.
-To get the base64 string: cat your-key-file.json | base64
-Recommended for GitHub Actions secrets.
-GCP_SA_KEY_BASE64=your-base64-encoded-key
-
-Vertex AI Model IDs
-For text generation, Gemini Pro is a great choice.
-VERTEX_AI_GEMINI_PRO_MODEL=gemini-pro
-
-For image generation, Imagen is an excellent choice.
-This is for a future feature, but good to include.
-VERTEX_AI_IMAGEN_MODEL=imagen-on-vertex-ai
-
---- Backend API Configuration ---
-The URL for your backend API
-NEXT_PUBLIC_API_URL=http://localhost:3000
-
---- Authentication Configuration ---
-If using Firebase Auth for a quick setup
-FIREBASE_API_KEY=your-firebase-api-key
-FIREBASE_AUTH_DOMAIN=your-firebase-auth-domain
 
 ---
 
