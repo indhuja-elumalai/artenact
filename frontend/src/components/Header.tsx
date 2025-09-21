@@ -11,6 +11,7 @@ import {
   MdClose as Close,
   MdLogin as Login,
   MdPersonAdd as PersonAdd,
+  MdHome as Home
 } from "react-icons/md";
 
 interface HeaderProps {
@@ -27,7 +28,6 @@ interface HeaderProps {
 export function Header({
   cartItems,
   onCartClick,
-
   onHeritageCapsuleClick,
   onLivingStoriesClick,
   onEventCalendarClick,
@@ -43,7 +43,7 @@ export function Header({
           {/* Logo */}
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 drop-shadow-md">
+              <h1 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 drop-shadow-md cursor-pointer" onClick={() => (window.location.hash = "#/")}>
                 ArteNact
               </h1>
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
@@ -56,6 +56,15 @@ export function Header({
           {/* Desktop Menu & Actions */}
           <div className="hidden md:flex items-center space-x-2">
             {/* Navigation Buttons */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => (window.location.hash = "#/")}
+              className="flex items-center space-x-1 rounded-lg border-orange-200/30 text-orange-200 bg-orange-100/10 hover:bg-orange-100/20 hover:shadow-md"
+            >
+              <Home className="h-4 w-4" />
+              <span>Home</span>
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -97,6 +106,15 @@ export function Header({
             </Button>
 
             {/* Auth Buttons */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onSignInClick}
+              className="flex items-center space-x-1 rounded-lg border-orange-200/30 text-orange-200 bg-orange-100/10 hover:bg-orange-100/20 hover:shadow-md"
+            >
+              <Login className="h-4 w-4" />
+              <span>Sign In</span>
+            </Button>
             
 
             <Button
@@ -176,6 +194,7 @@ export function Header({
 
             <div className="mt-8 space-y-4">
               {[
+                { label: "Home", icon: Home, onClick: () => { window.location.hash = "#/"; setMobileMenuOpen(false); } },
                 { label: "Stories", icon: Book, onClick: onLivingStoriesClick },
                 { label: "Events", icon: Calendar, onClick: onEventCalendarClick },
                 { label: "Heritage", icon: Archive, onClick: onHeritageCapsuleClick },

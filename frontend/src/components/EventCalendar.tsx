@@ -1,10 +1,155 @@
 import { useState } from "react";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Calendar, Clock, MapPin, Users, Star, Heart, Camera, Music, Palette } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { cva } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  Star,
+  Heart,
+  Camera,
+  Music,
+  Palette,
+  X,
+} from "lucide-react";
+
+// Helper function for Tailwind class merging
+function cn(...inputs) {
+  return twMerge(inputs);
+}
+
+// Inline Shadcn/ui Button component
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/90",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "underline-offset-4 hover:underline text-primary",
+      },
+      size: {
+        default: "h-10 py-2 px-4",
+        sm: "h-9 px-3 rounded-md",
+        lg: "h-11 px-8 rounded-md",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+function Button({ className, variant, size, ...props }) {
+  return (
+    <button
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
+}
+
+// Inline Shadcn/ui components
+const Dialog = ({ open, onOpenChange, ...props }) => {
+  return (
+    <div
+      className={cn(
+        "fixed inset-0 z-50 overflow-hidden flex items-center justify-center bg-black/50 backdrop-blur-sm transition-all duration-300",
+        open ? "opacity-100" : "opacity-0 pointer-events-none"
+      )}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onOpenChange(false);
+        }
+      }}
+      {...props}
+    />
+  );
+};
+
+const DialogContent = ({ className, children, ...props }) => (
+  <div
+    className={cn(
+      "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-6 rounded-xl shadow-2xl relative w-full max-w-lg scale-95 transition-transform duration-300",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+);
+
+const DialogHeader = ({ className, ...props }) => (
+  <div
+    className={cn(
+      "flex flex-col space-y-1.5 text-center sm:text-left",
+      className
+    )}
+    {...props}
+  />
+);
+
+const DialogTitle = ({ className, ...props }) => (
+  <h2
+    className={cn(
+      "text-lg font-semibold leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+);
+
+const Card = ({ className, ...props }) => (
+  <div
+    className={cn(
+      "rounded-xl border bg-card text-card-foreground shadow-sm",
+      className
+    )}
+    {...props}
+  />
+);
+
+const Badge = ({ className, variant, ...props }) => {
+  const badgeVariants = cva(
+    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+    {
+      variants: {
+        variant: {
+          default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+          secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+          outline: "text-foreground",
+        },
+      },
+      defaultVariants: {
+        variant: "default",
+      },
+    }
+  );
+  return (
+    <div
+      className={cn(badgeVariants({ variant, className }))}
+      {...props}
+    />
+  );
+};
+
+const ImageWithFallback = ({ src, alt, className }) => {
+  const [imgSrc, setImgSrc] = useState(src);
+  const handleError = () => {
+    // Set a placeholder image on error
+    setImgSrc(`https://placehold.co/1080x720/FDBA74/991B1B?text=Image+Not+Found`);
+  };
+  return (
+    <img src={imgSrc} alt={alt} onError={handleError} className={className} />
+  );
+};
+
 
 interface Event {
   id: string;
@@ -31,7 +176,6 @@ interface EventCalendarProps {
 
 export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
   const [filterType, setFilterType] = useState<string>("all");
 
   const events: Event[] = [
@@ -158,22 +302,38 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto bg-gray-50 dark:bg-gray-950 p-6 rounded-3xl transition-all duration-500">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-primary" />
-            Cultural Events & Artisan Showcases
-          </DialogTitle>
+          <div className="flex justify-between items-center mb-4">
+            <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-gray-800 dark:text-gray-200">
+              <Calendar className="h-6 w-6 text-orange-500" />
+              Cultural Events & Artisan Showcases
+            </DialogTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
         </DialogHeader>
 
         {!selectedEvent ? (
-          <div className="mt-6">
+          <div className="mt-4">
             {/* Filters */}
             <div className="flex flex-wrap gap-2 mb-6">
               <Button
                 variant={filterType === "all" ? "default" : "outline"}
                 onClick={() => setFilterType("all")}
                 size="sm"
+                className={cn(
+                  "rounded-full transition-all duration-200",
+                  filterType === "all"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
               >
                 All Events
               </Button>
@@ -181,7 +341,12 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                 variant={filterType === "workshop" ? "default" : "outline"}
                 onClick={() => setFilterType("workshop")}
                 size="sm"
-                className={filterType === "workshop" ? "bg-blue-500" : ""}
+                className={cn(
+                  "rounded-full transition-all duration-200",
+                  filterType === "workshop"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
               >
                 Workshops
               </Button>
@@ -189,7 +354,12 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                 variant={filterType === "festival" ? "default" : "outline"}
                 onClick={() => setFilterType("festival")}
                 size="sm"
-                className={filterType === "festival" ? "bg-purple-500" : ""}
+                className={cn(
+                  "rounded-full transition-all duration-200",
+                  filterType === "festival"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
               >
                 Festivals
               </Button>
@@ -197,7 +367,12 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                 variant={filterType === "exhibition" ? "default" : "outline"}
                 onClick={() => setFilterType("exhibition")}
                 size="sm"
-                className={filterType === "exhibition" ? "bg-green-500" : ""}
+                className={cn(
+                  "rounded-full transition-all duration-200",
+                  filterType === "exhibition"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
               >
                 Exhibitions
               </Button>
@@ -205,7 +380,12 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                 variant={filterType === "market" ? "default" : "outline"}
                 onClick={() => setFilterType("market")}
                 size="sm"
-                className={filterType === "market" ? "bg-orange-500" : ""}
+                className={cn(
+                  "rounded-full transition-all duration-200",
+                  filterType === "market"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
               >
                 Markets
               </Button>
@@ -213,7 +393,12 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                 variant={filterType === "performance" ? "default" : "outline"}
                 onClick={() => setFilterType("performance")}
                 size="sm"
-                className={filterType === "performance" ? "bg-pink-500" : ""}
+                className={cn(
+                  "rounded-full transition-all duration-200",
+                  filterType === "performance"
+                    ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
               >
                 Performances
               </Button>
@@ -221,17 +406,17 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
 
             {/* Featured Events Banner */}
             <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-800 dark:text-gray-200">
                 <Star className="h-5 w-5 text-yellow-500" />
                 Featured Events
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {events.filter(event => event.featured).map((event) => {
                   const IconComponent = getEventIcon(event.type);
                   return (
-                    <Card key={event.id} className="relative overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
+                    <Card key={event.id} className="relative overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-white dark:bg-gray-800 rounded-2xl border-2 border-orange-300/40">
                       <div className="absolute top-2 right-2 z-10">
-                        <Badge className="bg-yellow-400 text-yellow-900">
+                        <Badge className="bg-yellow-400 text-yellow-900 rounded-full px-3">
                           <Star className="h-3 w-3 mr-1" />
                           Featured
                         </Badge>
@@ -240,45 +425,45 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                         <ImageWithFallback
                           src={event.image}
                           alt={event.title}
-                          className="w-full h-32 object-cover"
+                          className="w-full h-40 object-cover rounded-t-xl"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         <div className="absolute bottom-2 left-2 right-2">
-                          <Badge className={`${getEventColor(event.type)} text-xs mb-1`}>
+                          <Badge className={`${getEventColor(event.type)} text-xs mb-1 rounded-full px-3`}>
                             <IconComponent className="h-3 w-3 mr-1" />
                             {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
                           </Badge>
                         </div>
                       </div>
                       
-                      <div className="p-3 space-y-2">
-                        <h3 className="font-semibold text-sm leading-tight line-clamp-2">
+                      <div className="p-4 space-y-2">
+                        <h3 className="font-semibold text-lg leading-tight line-clamp-2 text-gray-800 dark:text-gray-200">
                           {event.title}
                         </h3>
                         
-                        <div className="space-y-1 text-xs text-muted-foreground">
+                        <div className="space-y-1 text-sm text-gray-500 dark:text-gray-400">
                           <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
+                            <Calendar className="h-4 w-4 text-orange-500" />
                             <span>{formatDate(event.date)}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
+                            <Clock className="h-4 w-4 text-orange-500" />
                             <span>{event.time}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
+                            <MapPin className="h-4 w-4 text-orange-500" />
                             <span className="line-clamp-1">{event.location}</span>
                           </div>
                         </div>
                         
                         <div className="flex items-center justify-between pt-2">
-                          <div className="text-sm font-semibold text-green-600">
+                          <div className="text-xl font-bold text-green-600 dark:text-green-400">
                             {event.price}
                           </div>
                           <Button
                             size="sm"
                             onClick={() => setSelectedEvent(event)}
-                            className="h-6 text-xs bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                            className="h-8 text-sm bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-md rounded-full"
                           >
                             Details
                           </Button>
@@ -292,65 +477,65 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
 
             {/* All Events */}
             <div>
-              <h2 className="text-xl font-semibold mb-4">All Events</h2>
+              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">All Events</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredEvents.map((event) => {
                   const IconComponent = getEventIcon(event.type);
                   return (
-                    <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br from-white to-blue-50 border-blue-200">
+                    <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
                       <div className="relative">
                         <ImageWithFallback
                           src={event.image}
                           alt={event.title}
-                          className="w-full h-48 object-cover"
+                          className="w-full h-48 object-cover rounded-t-xl"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         <div className="absolute bottom-4 left-4 right-4">
-                          <Badge className={`${getEventColor(event.type)} text-xs mb-2`}>
+                          <Badge className={`${getEventColor(event.type)} text-xs mb-2 rounded-full px-3`}>
                             <IconComponent className="h-3 w-3 mr-1" />
                             {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
                           </Badge>
-                          <h3 className="text-white font-semibold text-sm leading-tight">
+                          <h3 className="text-white font-semibold text-lg leading-tight">
                             {event.title}
                           </h3>
                         </div>
                       </div>
                       
                       <div className="p-4 space-y-3">
-                        <div className="space-y-2 text-sm text-muted-foreground">
+                        <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                           <div className="flex items-center gap-2">
-                            <Calendar className="h-3 w-3" />
+                            <Calendar className="h-4 w-4 text-orange-500" />
                             <span>{formatDate(event.date)}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Clock className="h-3 w-3" />
+                            <Clock className="h-4 w-4 text-orange-500" />
                             <span>{event.time}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <MapPin className="h-3 w-3" />
+                            <MapPin className="h-4 w-4 text-orange-500" />
                             <span className="line-clamp-1">{event.location}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Users className="h-3 w-3" />
+                            <Users className="h-4 w-4 text-orange-500" />
                             <span>{event.registered}/{event.capacity} registered</span>
                           </div>
                         </div>
                         
                         <div className="flex flex-wrap gap-1">
                           {event.tags.slice(0, 3).map((tag, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs bg-blue-100 text-blue-700">
+                            <Badge key={index} variant="secondary" className="text-xs bg-orange-100 text-orange-700 rounded-full">
                               {tag}
                             </Badge>
                           ))}
                         </div>
                         
                         <div className="flex items-center justify-between pt-2">
-                          <div className="text-lg font-semibold text-green-600">
+                          <div className="text-xl font-bold text-green-600 dark:text-green-400">
                             {event.price}
                           </div>
                           <Button
                             onClick={() => setSelectedEvent(event)}
-                            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-md rounded-full"
                           >
                             View Details
                           </Button>
@@ -363,11 +548,11 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
             </div>
           </div>
         ) : (
-          <div className="mt-6">
+          <div className="mt-4">
             <Button
               variant="outline"
               onClick={() => setSelectedEvent(null)}
-              className="mb-6"
+              className="mb-6 rounded-full border-gray-300 text-gray-700 hover:bg-gray-100"
             >
               ← Back to Events
             </Button>
@@ -377,44 +562,44 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                 <div>
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h1 className="text-3xl font-bold mb-2">{selectedEvent.title}</h1>
-                      <Badge className={`${getEventColor(selectedEvent.type)} mb-4`}>
+                      <h1 className="text-3xl font-bold mb-2 text-gray-800 dark:text-gray-200">{selectedEvent.title}</h1>
+                      <Badge className={`${getEventColor(selectedEvent.type)} mb-4 rounded-full px-3`}>
                         {React.createElement(getEventIcon(selectedEvent.type), { className: "h-4 w-4 mr-1" })}
                         {selectedEvent.type.charAt(0).toUpperCase() + selectedEvent.type.slice(1)}
                       </Badge>
                     </div>
                     {selectedEvent.featured && (
-                      <Badge className="bg-yellow-400 text-yellow-900">
+                      <Badge className="bg-yellow-400 text-yellow-900 rounded-full px-3">
                         <Star className="h-4 w-4 mr-1" />
                         Featured
                       </Badge>
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-orange-500" />
                       <div>
                         <div className="font-medium">Date</div>
                         <div>{formatDate(selectedEvent.date)}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Clock className="h-4 w-4" />
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-orange-500" />
                       <div>
                         <div className="font-medium">Time</div>
                         <div>{selectedEvent.time}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="h-4 w-4" />
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-orange-500" />
                       <div>
                         <div className="font-medium">Location</div>
                         <div>{selectedEvent.location}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Users className="h-4 w-4" />
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-orange-500" />
                       <div>
                         <div className="font-medium">Capacity</div>
                         <div>{selectedEvent.registered}/{selectedEvent.capacity}</div>
@@ -426,21 +611,21 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                 <ImageWithFallback
                   src={selectedEvent.image}
                   alt={selectedEvent.title}
-                  className="w-full h-64 object-cover rounded-lg shadow-lg"
+                  className="w-full h-96 object-cover rounded-lg shadow-lg"
                 />
                 
                 <div>
-                  <h2 className="text-xl font-semibold mb-4">About This Event</h2>
-                  <p className="text-gray-700 leading-relaxed">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">About This Event</h2>
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                     {selectedEvent.description}
                   </p>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold mb-3">Event Tags</h3>
+                  <h3 className="font-semibold mb-3 text-gray-800 dark:text-gray-200">Event Tags</h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedEvent.tags.map((tag, index) => (
-                      <Badge key={index} variant="secondary" className="bg-purple-100 text-purple-700">
+                      <Badge key={index} variant="secondary" className="bg-orange-100 text-orange-700 rounded-full">
                         {tag}
                       </Badge>
                     ))}
@@ -449,15 +634,15 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
               </div>
               
               <div className="space-y-6">
-                <Card className="p-6 bg-gradient-to-br from-green-50 to-teal-50 border-green-200">
-                  <h3 className="font-semibold mb-4 text-center">Event Registration</h3>
+                <Card className="p-6 bg-gradient-to-br from-green-50 to-teal-50 border-green-200 rounded-2xl">
+                  <h3 className="font-semibold mb-4 text-center text-gray-800 dark:text-gray-200">Event Registration</h3>
                   <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-green-600 mb-1">{selectedEvent.price}</div>
-                    <div className="text-sm text-muted-foreground">per person</div>
+                    <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">{selectedEvent.price}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">per person</div>
                   </div>
                   
                   <div className="mb-4">
-                    <div className="flex justify-between text-sm mb-1">
+                    <div className="flex justify-between text-sm mb-1 text-gray-700 dark:text-gray-300">
                       <span>Spots Available</span>
                       <span>{selectedEvent.capacity - selectedEvent.registered} remaining</span>
                     </div>
@@ -469,39 +654,39 @@ export function EventCalendar({ isOpen, onClose }: EventCalendarProps) {
                     </div>
                   </div>
                   
-                  <Button className="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600">
+                  <Button className="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 rounded-full shadow-md">
                     <Heart className="h-4 w-4 mr-2" />
                     Register for Event
                   </Button>
                 </Card>
                 
-                <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-                  <h3 className="font-semibold mb-4">About the Artisan</h3>
+                <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 rounded-2xl">
+                  <h3 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">About the Artisan</h3>
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-blue-700">Name</label>
-                      <p className="text-sm">{selectedEvent.artisan}</p>
+                      <label className="text-sm font-medium text-blue-700 dark:text-blue-300">Name</label>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{selectedEvent.artisan}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-blue-700">Cultural Background</label>
-                      <p className="text-sm">{selectedEvent.culture}</p>
+                      <label className="text-sm font-medium text-blue-700 dark:text-blue-300">Cultural Background</label>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{selectedEvent.culture}</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="w-full mt-4 border-blue-300 text-blue-600 hover:bg-blue-50">
+                  <Button variant="outline" className="w-full mt-4 rounded-full border-blue-300 text-blue-600 hover:bg-blue-50">
                     View Artisan Profile
                   </Button>
                 </Card>
                 
-                <Card className="p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
-                  <h3 className="font-semibold mb-4">Share This Event</h3>
+                <Card className="p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200 rounded-2xl">
+                  <h3 className="font-semibold mb-4 text-gray-800 dark:text-gray-200">Share This Event</h3>
                   <div className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="outline" className="w-full justify-start rounded-full border-gray-300 text-gray-700 hover:bg-gray-100">
                       Share on Social Media
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="outline" className="w-full justify-start rounded-full border-gray-300 text-gray-700 hover:bg-gray-100">
                       Add to Calendar
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="outline" className="w-full justify-start rounded-full border-gray-300 text-gray-700 hover:bg-gray-100">
                       Email to Friend
                     </Button>
                   </div>
