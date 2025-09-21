@@ -98,7 +98,7 @@ export function Hero({ onAIBrandingClick, onEventCalendarClick, onLivingStoriesC
             </div>
 
             <div className="flex flex-col sm:flex-row gap-6">
-              <Button size="lg" className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg transform hover:scale-105 transition-all">
+              <Button size="lg" className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-xl font-bold py-4 px-8 rounded-2xl shadow-lg transform hover:scale-105 transition-all" onClick={() => { window.location.hash = '#/studio'; }}>
                 🌟 Explore Masterpieces
                 <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
               </Button>
@@ -106,7 +106,7 @@ export function Hero({ onAIBrandingClick, onEventCalendarClick, onLivingStoriesC
                 variant="outline" 
                 size="lg" 
                 className="group border-2 border-orange-300 text-orange-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-amber-50 text-xl font-bold py-4 px-8 rounded-2xl transform hover:scale-105 transition-all"
-                onClick={onAIBrandingClick}
+                onClick={() => { window.location.hash = '#/studio'; }}
               >
                 <Sparkles className="mr-3 h-6 w-6 group-hover:rotate-12 transition-transform" />
                 🎨 Create Magic
