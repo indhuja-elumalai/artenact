@@ -9,6 +9,8 @@ import {
   MdMenuBook as Book,
   MdCalendarToday as Calendar,
   MdClose as Close,
+  MdLogin as Login,
+  MdPersonAdd as PersonAdd,
 } from "react-icons/md";
 
 interface HeaderProps {
@@ -18,6 +20,8 @@ interface HeaderProps {
   onHeritageCapsuleClick: () => void;
   onLivingStoriesClick: () => void;
   onEventCalendarClick: () => void;
+  onSignInClick: () => void;
+  onSignUpClick: () => void;
 }
 
 export function Header({
@@ -27,6 +31,8 @@ export function Header({
   onHeritageCapsuleClick,
   onLivingStoriesClick,
   onEventCalendarClick,
+  onSignInClick,
+  onSignUpClick,
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -105,11 +111,30 @@ export function Header({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onAIBrandingClick}
+                onClick={() => { window.location.hash = '#/studio'; }}
                 className="bg-orange-200/20 border-orange-300/40 text-orange-100 hover:bg-orange-200/30"
               >
                 <Palette className="h-4 w-4 mr-2" />
                 AI Studio
+              </Button>
+
+              {/* Auth Buttons */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onSignInClick}
+                className="bg-orange-100/10 border-orange-200/30 text-orange-200 hover:bg-orange-100/20"
+              >
+                <Login className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+              <Button
+                size="sm"
+                onClick={onSignUpClick}
+                className="bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700"
+              >
+                <PersonAdd className="h-4 w-4 mr-2" />
+                Sign Up
               </Button>
             </div>
 
@@ -202,11 +227,30 @@ export function Header({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onAIBrandingClick}
+                onClick={() => { window.location.hash = '#/studio'; setMobileMenuOpen(false); }}
                 className="bg-orange-200/20 border-orange-300/40 text-orange-100"
               >
                 <Palette className="h-4 w-4 mr-2" />
                 AI Studio
+              </Button>
+
+              {/* Auth Buttons */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onSignInClick}
+                className="bg-orange-100/10 border-orange-200/30 text-orange-200"
+              >
+                <Login className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+              <Button
+                size="sm"
+                onClick={onSignUpClick}
+                className="bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700"
+              >
+                <PersonAdd className="h-4 w-4 mr-2" />
+                Sign Up
               </Button>
             </div>
           </div>

@@ -10,7 +10,11 @@ import { LivingStories } from "./components/LivingStories";
 import { EventCalendar } from "./components/EventCalendar";
 import { ShoppingCart } from "./components/ShoppingCart";
 import { Footer } from "./components/Footer";
+import { AuthModal } from "./components/AuthModal";
+import AIBrandingStudioPage from "./pages/AIBrandingStudioPage";
 import type { Product } from "./components/ProductCard";
+
+type AuthTab = "signin" | "signup";
 
 interface CartItem {
   product: Product;
@@ -24,6 +28,8 @@ export default function App() {
   const [isHeritageCapsuleOpen, setIsHeritageCapsuleOpen] = useState(false);
   const [isLivingStoriesOpen, setIsLivingStoriesOpen] = useState(false);
   const [isEventCalendarOpen, setIsEventCalendarOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<AuthTab>("signin");
 
   const addToCart = (product: Product) => {
     setCartItems(prevItems => {
@@ -62,6 +68,13 @@ export default function App() {
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  // force re-render on hash change for simple routing
+  const [, setHash] = useState(window.location.hash);
+
+  if (typeof window !== "undefined") {
+    window.onhashchange = () => setHash(window.location.hash);
+  }
+
   return (
     <div className="min-h-screen relative" style={{
       background: 'linear-gradient(135deg, #f8f5f0 0%, #f4f1e8 25%, #f6f3ee 50%, #f2efe8 75%, #f7f4f1 100%)'
@@ -82,17 +95,25 @@ export default function App() {
           onHeritageCapsuleClick={() => setIsHeritageCapsuleOpen(true)}
           onLivingStoriesClick={() => setIsLivingStoriesOpen(true)}
           onEventCalendarClick={() => setIsEventCalendarOpen(true)}
+          onSignInClick={() => { setAuthTab("signin"); setIsAuthOpen(true); }}
+          onSignUpClick={() => { setAuthTab("signup"); setIsAuthOpen(true); }}
         />
         
         <main>
-          <Hero 
-            onAIBrandingClick={() => setIsAIBrandingOpen(true)}
-            onEventCalendarClick={() => setIsEventCalendarOpen(true)}
-            onLivingStoriesClick={() => setIsLivingStoriesOpen(true)}
-          />
-          <FeaturedArtisans />
-          <HeritageBanner onHeritageCapsuleClick={() => setIsHeritageCapsuleOpen(true)} />
-          <ProductGrid onAddToCart={addToCart} />
+          {location.hash === "#/studio" ? (
+            <AIBrandingStudioPage />
+          ) : (
+            <>
+              <Hero 
+                onAIBrandingClick={() => setIsAIBrandingOpen(true)}
+                onEventCalendarClick={() => setIsEventCalendarOpen(true)}
+                onLivingStoriesClick={() => setIsLivingStoriesOpen(true)}
+              />
+              <FeaturedArtisans />
+              <HeritageBanner onHeritageCapsuleClick={() => setIsHeritageCapsuleOpen(true)} />
+              <ProductGrid onAddToCart={addToCart} />
+            </>
+          )}
         </main>
 
         <Footer />
@@ -125,6 +146,12 @@ export default function App() {
       <EventCalendar
         isOpen={isEventCalendarOpen}
         onClose={() => setIsEventCalendarOpen(false)}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialTab={authTab}
       />
     </div>
   );
